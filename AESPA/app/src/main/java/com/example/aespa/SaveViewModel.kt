@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 
 
 data class saveData(
+    var img : Uri?,
     val date : String,
     val name : String,
     val user_name : String,
@@ -24,6 +25,12 @@ class SaveViewModel {
     //아이템들이 들어있는 리스트
     val itemClickEvent = MutableLiveData<Int>()
 
+    fun addItem(uri: Uri?, date: String, name : String, user_name : String, content : String ) {
+        itemsEvent = event.ADD
+        itemsEventPos = items.size
+        items.add(saveData(uri,date,name,user_name,content))
+        itemsListData.value = items
+    }
     val itemSize get() = items.size
     //이벤트 발생 감지
     fun getItem(pos:Int) = items[pos]

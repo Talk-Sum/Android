@@ -11,20 +11,13 @@ class CustomAdapter2(  private val viewModel: ButtonViewModel2,
     companion object {
         var lastSelectedPosition = -1
     }
-
     inner class ViewHolder2(private val view: View) : RecyclerView.ViewHolder(view) {
         val imageView = view.findViewById<ImageView>(R.id.imageView4)
         val editText = view.findViewById<EditText>(R.id.editTextText2)
         private val REQUEST_IMAGE_PICK = 1
-
-
-
         private fun fetchImageFromGallery(position: Int) {
             imageSelectedListener.onImageSelected(position)
         }
-
-
-
         init {
             imageView.setOnClickListener {
                 val position = adapterPosition
