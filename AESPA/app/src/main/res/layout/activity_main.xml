@@ -21,22 +21,7 @@
         android:layout_marginBottom="100dp"
         app:srcCompat="@drawable/maintalksumlogo"
         />
-    <ImageButton
-        android:id="@+id/videobtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/videobtn_click"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        />
 
-    <ImageButton
-        android:id="@+id/soundbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/soundbtn_click"
-        android:layout_gravity="center"
-        />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
@@ -47,15 +32,7 @@
         android:padding="10dp"
         tools:layout="@layout/activity_login" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/rounded_background"
-        android:fontFamily="@font/kotra_godic"
-        android:text="video is not selected"/>
+
 
 
     <TextView

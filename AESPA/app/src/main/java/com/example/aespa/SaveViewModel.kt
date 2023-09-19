@@ -31,6 +31,7 @@ class SaveViewModel {
         items.add(saveData(uri,date,name,user_name,content))
         itemsListData.value = items
     }
+
     val itemSize get() = items.size
     //이벤트 발생 감지
     fun getItem(pos:Int) = items[pos]
@@ -41,11 +42,11 @@ class SaveViewModel {
         items.removeAt(pos)
         itemsListData.value = items
     }
-
-    fun updateItem(pos: Int, saveData: saveData) {
+    fun updateItem(pos: Int, uri: Uri?) {
         itemsEvent = event.UPDATE
         itemsEventPos = pos
-        items[pos] = saveData
+        val item = saveData(uri,items[pos].date,items[pos].name,items[pos].user_name,items[pos].content)
+        items[pos] = item
         itemsListData.value = items // 옵저버에게 라이브데이터가 변경된 것을 알리기 위해
     }
 

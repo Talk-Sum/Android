@@ -15,12 +15,12 @@
             android:name="com.example.aespa.BlankFragment4"
  />
 
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@drawable/saveimage"
-            />
+    <ImageButton
+        android:id="@+id/savabtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@drawable/saveimage" />
 
 
     </LinearLayout>

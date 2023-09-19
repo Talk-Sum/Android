@@ -58,4 +58,6 @@ class case2 : Fragment(), ImageSelectedListener{
     }
 
 
+
+
 }

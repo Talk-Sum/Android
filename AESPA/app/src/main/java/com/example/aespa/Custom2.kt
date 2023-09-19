@@ -1,5 +1,6 @@
 package com.example.aespa
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,24 @@ class Custom2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val saveDialog = SaveDialog(this)
+        setContentView(binding.root)
+
+
+        saveDialog.setOnClickedListener(object : SaveDialog.ButtonClickListener {
+            override fun onClicked(fileName: String) {
+                val intent = Intent(this@Custom2,SaveList::class.java)
+                intent.putExtra("name",fileName)
+                startActivity(intent)
+            }
+        })
+
+
+        binding.savabtn.setOnClickListener{
+            saveDialog.myDig()
+        }
+
+
         val imgId = intent.getIntExtra("imgId",0)
         val itemId = intent.getIntExtra("itemId",0)
         when(itemId){
@@ -31,6 +50,5 @@ class Custom2 : AppCompatActivity() {
             1 -> insertFragment(R.id.fragment4,case2())
             else -> Log.e("에러","에러")
         }
-        setContentView(binding.root)
     }
 }

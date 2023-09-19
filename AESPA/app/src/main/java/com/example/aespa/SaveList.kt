@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aespa.databinding.ActivityCustom2Binding
 import com.example.aespa.databinding.ActivitySaveListBinding
 import com.example.aespa.databinding.Item2Binding
@@ -16,10 +17,27 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
 
     private lateinit var viewModel: SaveViewModel
     private lateinit var binding: ActivitySaveListBinding// 바인딩 객체 선언
+
+
     private val REQUEST_IMAGE_PICK =1
+    lateinit var fileName: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_save_list)
+        binding = ActivitySaveListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewModel = SaveViewModel()
+        fileName = intent.getStringExtra("name").toString()
+
+        val recyclerView = binding.menurec
+        val adapter = SaveAdapter(viewModel, this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
+
+        viewModel.addItem(null, "",fileName,"","")
+        binding.menurec.adapter?.notifyDataSetChanged()
     }
     val storage = Firebase.storage
     val storageRef = storage.reference
@@ -40,9 +58,9 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
         startActivityForResult(pickImageIntent, REQUEST_IMAGE_PICK)
     }
 
-
-
     override fun onImageReceived(uri: Uri, position: Int) {
+        viewModel.updateItem(position, uri)
+        binding.menurec.adapter?.notifyItemChanged(position)
     }
 
 

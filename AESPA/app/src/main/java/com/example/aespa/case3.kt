@@ -56,4 +56,5 @@ class case3 : Fragment(), ImageSelectedListener {
         viewModel.updateItem(position, uri)
         binding.todoList3.adapter?.notifyItemChanged(position)
     }
+
 }

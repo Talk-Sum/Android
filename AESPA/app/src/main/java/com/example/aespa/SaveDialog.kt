@@ -5,21 +5,21 @@ import android.content.Context
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 
 class SaveDialog(context: Context) {
     private val dialog = Dialog(context)
 
     fun myDig() {
-
-
+        dialog.setContentView(R.layout.nextsavedialog)
         val edit = dialog.findViewById<EditText>(R.id.editTextText5)
-        val btnOk = dialog.findViewById<Button>(R.id.savebutton)
-
+        val btnOk = dialog.findViewById<ImageButton>(R.id.savebutton)
 
         btnOk.setOnClickListener {
+            onClickedListener?.onClicked(edit.text.toString())
             dialog.dismiss()
         }
-        dialog.setContentView(R.layout.nextsavedialog)
+
         dialog.window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT)
@@ -31,7 +31,8 @@ class SaveDialog(context: Context) {
         fun onClicked(fileName: String)
     }
 
-    private lateinit var onClickedListener: ButtonClickListener
+    private var onClickedListener: ButtonClickListener? = null
+
 
     fun setOnClickedListener(listener: ButtonClickListener) {
         onClickedListener = listener

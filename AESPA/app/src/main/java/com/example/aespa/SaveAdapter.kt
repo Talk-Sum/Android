@@ -20,6 +20,9 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
         val datet = view.findViewById<TextView>(R.id.date)
         val user_namet = view.findViewById<TextView>(R.id.username)
         val previewt = view.findViewById<TextView>(R.id.preview)
+        fun bind(data: saveData) {
+            namet.text = data.name // data.name 대신 fileName 사용
+        }
         private fun fetchImageFromGallery(position: Int) {
             imageSelectedListener.onImageSelected(position)
         }
@@ -27,7 +30,7 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
             imgv.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    CustomAdapter2.lastSelectedPosition = position
+                    SaveAdapter.lastSelectedPosition = position
                     fetchImageFromGallery(position) // position을 전달해 줍니다.
                 }
                 notifyDataSetChanged()
@@ -41,17 +44,20 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
     }
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder4 {
         val layoutInflater = LayoutInflater.from(viewGroup.context)
-        val view = layoutInflater.inflate(R.layout.activity_save_list,viewGroup,false)
+        val view = layoutInflater.inflate(R.layout.recycler_save_view,viewGroup,false)
         val viewHolder = ViewHolder4(view)
+
         view.setOnClickListener {
             viewModel4.itemClickEvent.value = viewHolder.adapterPosition
         }
+
         return viewHolder
     }
     override fun getItemCount() = viewModel4.items.size
 
     override fun onBindViewHolder(viewHolder: SaveAdapter.ViewHolder4, position: Int) {
         viewHolder.setContents(position)
+        viewHolder.bind(viewModel4.items[position])
     }
 
 
