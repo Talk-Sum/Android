@@ -24,19 +24,20 @@ import com.google.firebase.storage.ktx.storage
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.io.IOException
 
 class InputActivity : AppCompatActivity() {
     val viewModel: ButtonViewModel by viewModels()
     private val binding by lazy {
         ActivityInputBinding.inflate(layoutInflater)
     }
-    val client = OkHttpClient()
     val storage = Firebase.storage
     val storageRef = storage.reference
     var fn = ""
     var state = false
     private val REQUEST_VIDEO_CAPTURE = 1
     private val REQUEST_AUDIO_PICK = 2
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,6 +134,53 @@ class InputActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+    fun sendPostRequest(url: String, data: Map<String, String>) {
+        val client = OkHttpClient()
+
+        val requestBodyBuilder = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+
+        // 매개변수로 받은 데이터를 요청 몸체에 추가
+        for ((key, value) in data) {
+            requestBodyBuilder.addFormDataPart(key, value)
+        }
+        val requestBody = requestBodyBuilder.build()
+
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object: okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                // 네트워크 에러, 타임아웃, 인터럽트 등의 이유로 요청이 실패한 경우
+                e.printStackTrace() // 로그에 에러 정보 출력
+                // 사용자에게 에러 메시지 표시 등 추가 처리 가능
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    println("Response received: $responseBody") // 응답 로그 출력
+
+                    // 추가적으로, JSON 파싱이나 다른 데이터 처리를 여기서 수행 가능
+                } else {
+                    println("Server responded with error code: ${response.code}")
+                    val errorBody = response.body?.string()
+                    println("Error message: $errorBody") // 서버에서 제공하는 에러 메시지 출력 (있을 경우)
+
+                    // 사용자에게 에러 메시지 표시 등 추가 처리 가능
+                }
+            }
+        })
+    }
+    //사용법
+//val postData = mapOf("key1" to "value1", "key2" to "value2")
+//sendPostRequest("https://example.com/your-endpoint", postData)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

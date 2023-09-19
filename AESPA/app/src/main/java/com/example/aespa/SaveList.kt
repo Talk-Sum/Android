@@ -17,11 +17,8 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
 
     private lateinit var viewModel: SaveViewModel
     private lateinit var binding: ActivitySaveListBinding// 바인딩 객체 선언
-
-
     private val REQUEST_IMAGE_PICK =1
     lateinit var fileName: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySaveListBinding.inflate(layoutInflater)
@@ -51,7 +48,6 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
             }
         }
     }
-
     override fun onImageSelected(position: Int) {
         val pickImageIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         SaveAdapter.lastSelectedPosition = position
