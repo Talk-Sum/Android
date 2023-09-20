@@ -14,6 +14,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -27,41 +28,56 @@ import io.reactivex.schedulers.Schedulers
 import java.io.IOException
 
 class InputActivity : AppCompatActivity() {
+    private val REQUEST_INTENT_CODE = 11223345
+    //뷰모델
     val viewModel: ButtonViewModel by viewModels()
+    //뷰 바인딩
     private val binding by lazy {
         ActivityInputBinding.inflate(layoutInflater)
     }
+    //파이어베이스
     val storage = Firebase.storage
     val storageRef = storage.reference
-    var fn = ""
-    var state = false
+
+    //인텐트 값 가저오기
+    //비디오, 오디오 요청 상수
     private val REQUEST_VIDEO_CAPTURE = 1
     private val REQUEST_AUDIO_PICK = 2
 
+
+    //로그인 상태 정의 변수
+    var state = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        //비디오 버튼 클릭 리스너
         binding.videobtn.setOnClickListener {
             dispatchTakeVideoIntent()
         }
 
+
+        //오디오 버튼 클릭 리스너
+        binding.soundbtn.setOnClickListener {
+            dispatchTakeAudioIntent()
+        }
+
+
+        //다음 버튼 클릭 리스너
         binding.nextbtn.setOnClickListener {
             if(state) {
                 val intent = Intent(this, Custom::class.java)
-                intent.putExtra("filename", fn)
-                startActivity(intent)
+                startActivityForResult(intent, REQUEST_INTENT_CODE)
             }
             else
                 Toast.makeText(this@InputActivity, "파일을 선택해 주세요.", Toast.LENGTH_SHORT).show()
         }
 
-        binding.soundbtn.setOnClickListener {
-            dispatchTakeAudioIntent()
-        }
+
     }
-    val typeArr = arrayOf("audio/*")
+
+    //오디오 가저오는 함수
     private fun dispatchTakeAudioIntent() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
             != PackageManager.PERMISSION_GRANTED) {
@@ -98,6 +114,8 @@ class InputActivity : AppCompatActivity() {
         }
     }
 
+
+    //비디오 가저오는 함수
     private fun dispatchTakeVideoIntent() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
             != PackageManager.PERMISSION_GRANTED) {
@@ -138,6 +156,8 @@ class InputActivity : AppCompatActivity() {
 
 
 
+    //Post 방식으로 서버에 전송
+
     fun sendPostRequest(url: String, data: Map<String, String>) {
         val client = OkHttpClient()
 
@@ -156,12 +176,16 @@ class InputActivity : AppCompatActivity() {
             .build()
 
         client.newCall(request).enqueue(object: okhttp3.Callback {
+
+            //실패시
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 // 네트워크 에러, 타임아웃, 인터럽트 등의 이유로 요청이 실패한 경우
                 e.printStackTrace() // 로그에 에러 정보 출력
                 // 사용자에게 에러 메시지 표시 등 추가 처리 가능
             }
 
+
+            //응답시
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
@@ -182,6 +206,8 @@ class InputActivity : AppCompatActivity() {
 //val postData = mapOf("key1" to "value1", "key2" to "value2")
 //sendPostRequest("https://example.com/your-endpoint", postData)
 
+
+    //오디오,동영상 가저오기
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
@@ -207,12 +233,16 @@ class InputActivity : AppCompatActivity() {
 
                         // Define a progress bar dialog
 
+
+                        //로딩중
                         val progressDialog = Dialog(this)
                         progressDialog.setContentView(R.layout.progressbar)
                         progressDialog.setCancelable(false)
 
                         progressDialog.show()
 
+
+                        //비동기 처리 코드 (RxKotlin)
                         Completable.create { emitter ->
                             val uploadTask = videoRef.putFile(it)
                             uploadTask.addOnProgressListener { taskSnapshot ->
@@ -245,6 +275,7 @@ class InputActivity : AppCompatActivity() {
 
 
         }
+        //오디오 요청 코드
         else if (requestCode == REQUEST_AUDIO_PICK && resultCode == RESULT_OK) {
             val audioUri: Uri? = data?.data
             // audioUri를 사용하여 오디오를 가져옵니다.
@@ -261,7 +292,6 @@ class InputActivity : AppCompatActivity() {
                     val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                     if (nameIndex != -1) {
                         val fileName = cursor.getString(nameIndex)
-                        fn = fileName
                         binding.textView.append("File Name : $fileName")
                         val audioRef = storageRef.child("audios/$fileName")
 
@@ -302,7 +332,13 @@ class InputActivity : AppCompatActivity() {
                 state = true
             }
         }
-
+        if (requestCode == REQUEST_INTENT_CODE && resultCode == RESULT_OK) {
+            // C로부터 받은 결과를 그대로 A로
+            val contact = data?.getStringExtra("context")
+            Log.d("input값은2","${contact}")
+            setResult(RESULT_OK, data)
+            finish()
+        }
 
     }
 

@@ -17,9 +17,8 @@ class ButtonViewModel : ViewModel(){
      val selectedImage: LiveData<Int> get() = _selectedImage
      var itemId = 0
      val loginable: MutableLiveData<Boolean> = MutableLiveData()
-
-
-
+     var content =""
+     var name = ""
      val itemsListData = MutableLiveData<ArrayList<ImgItem>>()
      val items = ArrayList<ImgItem>()
      val itemClickEvent = MutableLiveData<Int>()

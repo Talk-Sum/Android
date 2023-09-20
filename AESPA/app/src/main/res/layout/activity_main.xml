@@ -14,7 +14,7 @@
     <ImageView
         android:layout_marginTop="60dp"
         android:id="@+id/imageView2"
-        android:layout_width="500dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
@@ -30,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:layout_marginTop="100dp"
         tools:layout="@layout/activity_login" />
 
 
@@ -40,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/kotra_godic"
         android:text="로그인 인증 필요" />
 </LinearLayout>

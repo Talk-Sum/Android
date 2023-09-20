@@ -13,6 +13,7 @@ data class ImgItem3(
 )
 enum class ItemEvent3 { ADD, UPDATE, DELETE }
 class ButtonViewModel3 : ViewModel() {
+    var cot = ""
     val itemsListData = MutableLiveData<ArrayList<ImgItem3>>()
     val items = ArrayList<ImgItem3>()
     val itemClickEvent = MutableLiveData<Int>()

@@ -16,7 +16,7 @@ import com.example.aespa.databinding.ItemBinding
 
 class case2 : Fragment(), ImageSelectedListener{
     private val viewModel by activityViewModels<ButtonViewModel2>()
-    private lateinit var binding:Item2Binding// 바인딩 객체 선언
+    private lateinit var binding:Item2Binding// 바인딩 객체선언
     private val REQUEST_IMAGE_PICK =1
 
 
