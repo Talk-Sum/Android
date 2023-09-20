@@ -29,7 +29,7 @@ class Custom2 : AppCompatActivity() {
         val saveDialog = SaveDialog(this)
         setContentView(binding.root)
 
-        val content = "hello"
+        val content = "hello" //전송받은 요약내용 담을 변수
 
 
         binding.savabtn.setOnClickListener{

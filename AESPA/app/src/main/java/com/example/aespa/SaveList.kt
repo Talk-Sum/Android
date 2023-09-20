@@ -80,6 +80,9 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
         if (requestCode == REQUEST_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             val contact = data?.getStringExtra("context")
             Log.d("값은2","${contact},${name}")
+            viewModel.addItem(null,"20202020","$name","55","$contact")
+            binding.menurec.adapter?.notifyDataSetChanged()
+
         }
     }
 

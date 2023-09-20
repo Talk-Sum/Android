@@ -22,6 +22,9 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
         val previewt = view.findViewById<TextView>(R.id.preview)
         fun bind(data: saveData) {
             namet.text = data.name // data.name 대신 fileName 사용
+            datet.text = data.date
+            user_namet.text = data.user_name
+            previewt.text = data.content
         }
         private fun fetchImageFromGallery(position: Int) {
             imageSelectedListener.onImageSelected(position)
