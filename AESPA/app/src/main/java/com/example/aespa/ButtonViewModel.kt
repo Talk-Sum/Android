@@ -19,12 +19,14 @@ class ButtonViewModel : ViewModel(){
      val loginable: MutableLiveData<Boolean> = MutableLiveData()
      var content =""
      var name = ""
+     val nicknameLiveData = MutableLiveData<String?>()
      val itemsListData = MutableLiveData<ArrayList<ImgItem>>()
      val items = ArrayList<ImgItem>()
      val itemClickEvent = MutableLiveData<Int>()
      var itemsEvent = ItemEvent.ADD
      var itemsEventPos = -1
      var itemLongClick = -1
+     var setcontact = ""
      fun getItem(pos: Int) =  items[pos]
      val itemsSize
           get() = items.size

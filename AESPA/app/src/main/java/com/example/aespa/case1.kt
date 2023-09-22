@@ -24,9 +24,8 @@ class case1 : Fragment() , ImageSelectedListener{
         recyclerView.adapter = CustomAdapter(viewModel,this)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
-        viewModel.itemClickEvent.observe(requireActivity()) { // 항목(뷰)을 클릭했을 때 변경되는 데이터 옵저버
-            //갤러리이동
-        }
+
+
 
 
 

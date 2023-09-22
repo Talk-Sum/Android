@@ -1,37 +1,16 @@
     package com.example.aespa
     import android.content.Intent
-    import android.content.pm.PackageManager
-    import android.Manifest
-    import android.app.AlertDialog
+    import android.app.Activity
     import android.app.Application
-    import android.app.Dialog
-    import android.content.ContentValues.TAG
-    import android.media.MediaMetadataRetriever
-    import android.net.Uri
     import android.os.Bundle
-    import android.provider.OpenableColumns
-    import android.provider.Settings.Global.getString
     import android.util.Log
-    import android.widget.Toast
-    import androidx.activity.result.ActivityResultLauncher
     import androidx.activity.viewModels
     import androidx.appcompat.app.AppCompatActivity
-    import androidx.core.app.ActivityCompat
-    import androidx.core.content.ContextCompat
-    import androidx.core.view.isGone
-    import androidx.fragment.app.activityViewModels
-    import androidx.lifecycle.ViewModelProvider
     import com.example.aespa.databinding.ActivityMainBinding
-    import com.google.firebase.ktx.Firebase
-    import com.google.firebase.storage.ktx.storage
     import com.kakao.sdk.common.KakaoSdk
-    import io.reactivex.Completable
-    import io.reactivex.android.schedulers.AndroidSchedulers
-    import io.reactivex.schedulers.Schedulers
-    import com.kakao.sdk.common.util.Utility
-    import com.kakao.sdk.user.UserApiClient
     class MainActivity : AppCompatActivity() {
-
+        private var userId: Long = 0L
+        private var userNickname: String? = null
 
         //버튼 뷰 모델 사용
         val viewModel: ButtonViewModel by viewModels()
@@ -52,26 +31,35 @@
 
 
 
+
+
+
+
+
+
+
+
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(binding.root)
 
+            viewModel.nicknameLiveData.observe(this) { nickname ->
+                userNickname = nickname
+                Log.d("닉","네임$userNickname")
+                val intent = Intent(this,SaveList::class.java)
+                Log.d("닉2","$userNickname")
+                intent.putExtra("Nickname",userNickname)
+                intent.putExtra("userId",userId)
+                startActivity(intent)
+            }
             //로그인 인증
             viewModel.loginable.observe(this) { loginable ->
                 when(loginable){
                     true -> {
-
                         //텍스트 뷰 변환
-
                         binding.textView2.text = "로그인 인증 성공!!"
-
-
-
                         // 노트 리스트 화면으로 이동
-
-                        val intent = Intent(this,SaveList::class.java)
-                        startActivity(intent)
-
 
                     }
 
@@ -84,4 +72,18 @@
 
 
         }
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK) {
+                val bundle = data?.getBundleExtra("userBundle")
+                val userInfo = bundle?.getSerializable("userInfo") as? LoginEditFragment.UserInfo
+                if (userInfo != null) {
+                    userNickname = data.getStringExtra("Nickname")
+                    viewModel.nicknameLiveData.value = userNickname  // LiveData를 갱신합니다.
+                    Log.d("아이디는@@", "$userId 이랑 $userNickname")
+                }
+            }
+        }
+
     }

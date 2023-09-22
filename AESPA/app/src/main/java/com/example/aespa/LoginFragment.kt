@@ -30,7 +30,9 @@
                 if (result.resultCode == Activity.RESULT_OK) {
                     val data = result.data
                     val receivedData = data?.getBooleanExtra("loginState",false) // 전달된 데이터 받기
+                    val nickname = data?.getStringExtra("Nickname")
                     viewModel.loginable.value = receivedData
+                    viewModel.nicknameLiveData.value = nickname
                 }
             }
             binding.imageButton4.setOnClickListener {

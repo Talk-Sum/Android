@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.provider.MediaStore
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,8 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
     private lateinit var binding: ActivitySaveListBinding// 바인딩 객체 선언
     private val REQUEST_IMAGE_PICK =1 //갤러리에서 이미지 가져오는 코드
     var name : String? = null
+
+
     //Intent 요청 코드
     private val REQUEST_INTENT_CODE = 11223344
 
@@ -27,8 +30,8 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
         super.onCreate(savedInstanceState)
         binding = ActivitySaveListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
+        val Nickname = intent?.getStringExtra("Nickname")
+        Log.d("넘어온데이터","$Nickname")
 
 
         //플로팅 액션 버튼
@@ -44,6 +47,7 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
+
 
         //다이얼로그 클릭리스너
         val saveDialog = SaveDialog(this)
@@ -65,9 +69,9 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
     val storage = Firebase.storage
     val storageRef = storage.reference
 
+
+
     //갤러리에서 이미지 가져오기 위한 부분
-
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -79,8 +83,9 @@ class SaveList : AppCompatActivity(), ImageSelectedListener {
         }
         if (requestCode == REQUEST_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             val contact = data?.getStringExtra("context")
-            Log.d("값은2","${contact},${name}")
-            viewModel.addItem(null,"20202020","$name","55","$contact")
+            val date = data?.getStringExtra("date")
+            val Nickname = intent.getStringExtra("Nickname")
+            viewModel.addItem(null,"$date","$name","$Nickname","$contact")
             binding.menurec.adapter?.notifyDataSetChanged()
 
         }

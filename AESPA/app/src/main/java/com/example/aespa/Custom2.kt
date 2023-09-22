@@ -1,14 +1,16 @@
 package com.example.aespa
 
-import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.core.view.get
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.aespa.databinding.ActivityCustom2Binding
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 class Custom2 : AppCompatActivity() {
     private val viewModel by viewModels<ButtonViewModel>()
@@ -29,6 +31,24 @@ class Custom2 : AppCompatActivity() {
         val saveDialog = SaveDialog(this)
         setContentView(binding.root)
 
+
+        val currentDate = LocalDate.now()
+
+// 현재 날짜 및 시간 가져오기 (LocalDateTime 사용)
+
+// 현재 날짜 및 시간 가져오기 (LocalDateTime 사용)
+        val currentDateTime = LocalDateTime.now()
+
+// 날짜를 원하는 형식으로 포맷팅
+
+// 날짜를 원하는 형식으로 포맷팅
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedDate = currentDate.format(dateFormatter)
+
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(dateTimeFormatter)
+
+
         val content = "hello" //전송받은 요약내용 담을 변수
 
 
@@ -36,6 +56,7 @@ class Custom2 : AppCompatActivity() {
             val resultIntent = Intent()
             resultIntent.putExtra("use", true)
             resultIntent.putExtra("context", content)
+            resultIntent.putExtra("time",formattedDateTime)
             setResult(RESULT_OK, resultIntent)
             finish()
         }
