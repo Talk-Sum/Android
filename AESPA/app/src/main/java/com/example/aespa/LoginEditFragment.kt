@@ -150,9 +150,6 @@
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
             binding = LoginEditFragmentBinding.inflate(inflater, container, false) // 뷰 바인딩 초기화
-
-
-
             binding.imageView6.setOnClickListener {
                 val progressDialog = showProgressDialog()
 

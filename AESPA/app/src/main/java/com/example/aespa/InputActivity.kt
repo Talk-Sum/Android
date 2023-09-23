@@ -105,11 +105,12 @@ class InputActivity : AppCompatActivity() {
             }
         } else {
             val pickAudioIntent = Intent(Intent.ACTION_GET_CONTENT)
-            pickAudioIntent.type = "audio/*"
+            pickAudioIntent.type = "audio/wav" // WAV 파일을 선택하도록 변경
             if (pickAudioIntent.resolveActivity(packageManager) != null) {
                 startActivityForResult(pickAudioIntent, REQUEST_AUDIO_PICK)
             }
         }
+
     }
 
 
@@ -119,14 +120,14 @@ class InputActivity : AppCompatActivity() {
 
         val observable: Observable<Response> = Observable.create(ObservableOnSubscribe<Response> { emitter ->
             val file = File(fileUri.path)
-            val fileRequestBody = RequestBody.create(contentResolver.getType(fileUri)!!.toMediaTypeOrNull(), file)
+            val fileRequestBody = RequestBody.create("audio/wav".toMediaType(), file) // WAV 파일로 설정
             val multipartBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(type, fileName, fileRequestBody)
                 .build()
 
             val request = Request.Builder()
-                .url("https://b380-223-194-133-149.ngrok-free.app")
+                .url("https://2bb0-223-194-133-149.ngrok-free.app")
                 .post(multipartBody)
                 .build()
 

@@ -41,9 +41,11 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.0'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+    implementation 'com.itextpdf:itextg:5.5.10'
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -57,6 +59,8 @@ dependencies {
     implementation "com.kakao.sdk:v2-story:2.15.0" // 카카오스토리
     implementation "com.kakao.sdk:v2-share:2.15.0" // 메시지(카카오톡 공유)
     implementation "com.kakao.sdk:v2-navi:2.15.0" // 카카오내비
+    implementation 'androidx.cardview:cardview:1.0.0'
+
     implementation "com.kakao.sdk:v2-friend:2.15.0" // 카카오톡 소셜 피커, 리소스 번들 파일 포함
 
 

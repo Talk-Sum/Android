@@ -2,16 +2,22 @@ package com.example.aespa
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.aespa.databinding.ActivityCustom2Binding
+import com.itextpdf.text.Document
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-
 class Custom2 : AppCompatActivity() {
     private val viewModel by viewModels<ButtonViewModel>()
     private val REQUEST_INTENT_CODE = 11223347
@@ -20,38 +26,20 @@ class Custom2 : AppCompatActivity() {
             .add(containerId,fragment)
             .commit()
     }
-
-
     private val binding by lazy{
     ActivityCustom2Binding.inflate(layoutInflater)
-}
-
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val saveDialog = SaveDialog(this)
         setContentView(binding.root)
-
-
         val currentDate = LocalDate.now()
-
-// 현재 날짜 및 시간 가져오기 (LocalDateTime 사용)
-
-// 현재 날짜 및 시간 가져오기 (LocalDateTime 사용)
         val currentDateTime = LocalDateTime.now()
-
-// 날짜를 원하는 형식으로 포맷팅
-
-// 날짜를 원하는 형식으로 포맷팅
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val formattedDate = currentDate.format(dateFormatter)
-
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = currentDateTime.format(dateTimeFormatter)
-
-
         val content = "hello" //전송받은 요약내용 담을 변수
-
-
         binding.savabtn.setOnClickListener{
             val resultIntent = Intent()
             resultIntent.putExtra("use", true)
@@ -60,11 +48,6 @@ class Custom2 : AppCompatActivity() {
             setResult(RESULT_OK, resultIntent)
             finish()
         }
-
-
-
-
-
         val imgId = intent.getIntExtra("imgId",0)
         val itemId = intent.getIntExtra("itemId",0)
         when(itemId){
@@ -74,4 +57,6 @@ class Custom2 : AppCompatActivity() {
             else -> Log.e("에러","에러")
         }
     }
+
+
 }

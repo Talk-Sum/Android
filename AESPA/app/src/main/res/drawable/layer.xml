@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 먼저 이미지 Drawable을 추가합니다 -->
+    <item android:drawable="@drawable/image_background" />
+    <!-- 그 다음에 투명한 색상 Drawable을 추가합니다 -->
+    <item android:drawable="@drawable/transparent_background" />
+</layer-list>

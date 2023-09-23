@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 
 
 data class saveData(
-    var img : Uri?,
-    val date : String,
-    val name : String,
-    val user_name : String,
-    val content : String
-    )
+    var img: Uri? = null,
+    var date: String? = null,
+    var name: String? = null,
+    var user_name: String? = null,
+    var content: String? = null
+)
+
 
 
 enum class event { ADD, UPDATE, DELETE }
@@ -24,7 +25,9 @@ class SaveViewModel {
     val items = ArrayList<saveData>()
     //아이템들이 들어있는 리스트
     val itemClickEvent = MutableLiveData<Int>()
-
+    fun clearItems() {
+        items.clear()
+    }
     fun addItem(uri: Uri?, date: String, name : String, user_name : String, content : String ) {
         itemsEvent = event.ADD
         itemsEventPos = items.size
