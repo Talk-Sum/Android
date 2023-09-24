@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 
 
 data class saveData(
+    var imgStr : String = "",
     var img: Uri? = null,
     var date: String? = null,
     var name: String? = null,
@@ -28,10 +29,10 @@ class SaveViewModel {
     fun clearItems() {
         items.clear()
     }
-    fun addItem(uri: Uri?, date: String, name : String, user_name : String, content : String ) {
+    fun addItem(uri: Uri?, date: String, name : String, user_name : String, content : String,urlstr : String ) {
         itemsEvent = event.ADD
         itemsEventPos = items.size
-        items.add(saveData(uri,date,name,user_name,content))
+        items.add(saveData(urlstr,uri,date,name,user_name,content))
         itemsListData.value = items
     }
 
@@ -48,7 +49,7 @@ class SaveViewModel {
     fun updateItem(pos: Int, uri: Uri?) {
         itemsEvent = event.UPDATE
         itemsEventPos = pos
-        val item = saveData(uri,items[pos].date,items[pos].name,items[pos].user_name,items[pos].content)
+        val item = saveData(items[pos].imgStr,uri,items[pos].date,items[pos].name,items[pos].user_name,items[pos].content)
         items[pos] = item
         itemsListData.value = items // 옵저버에게 라이브데이터가 변경된 것을 알리기 위해
     }

@@ -6,7 +6,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import android.Manifest
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
@@ -16,6 +15,10 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -27,14 +30,18 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableOnSubscribe
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.TimeUnit
+
 class InputActivity : AppCompatActivity() {
     private val compositeDisposable = CompositeDisposable()
     private val REQUEST_INTENT_CODE = 11223345
@@ -53,13 +60,14 @@ class InputActivity : AppCompatActivity() {
     private val REQUEST_AUDIO_PICK = 2
     //로그인 상태 정의 변수
     var state = false
+    var summary : String? =""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         //비디오 버튼 클릭 리스너
         binding.videobtn.setOnClickListener {
-            dispatchTakeVideoIntent()
+            showYoutubeLinkDialog()
         }
         //오디오 버튼 클릭 리스너
         binding.soundbtn.setOnClickListener {
@@ -69,6 +77,7 @@ class InputActivity : AppCompatActivity() {
         binding.nextbtn.setOnClickListener {
             if(state) {
                 val intent = Intent(this, Custom::class.java)
+                intent.putExtra("summary","$summary")
                 startActivityForResult(intent, REQUEST_INTENT_CODE)
             }
             else
@@ -114,10 +123,89 @@ class InputActivity : AppCompatActivity() {
     }
 
 
-    fun uploadMediaToServer(fileUri: Uri, type: String, fileName: String) {
+    private fun showYoutubeLinkDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.youtube_link_dialog, null)
+        val editTextLink = dialogView.findViewById<EditText>(R.id.eddit)
+        val saveButton = dialogView.findViewById<ImageButton>(R.id.btnsave)
+
+        val languageSpinner = dialogView.findViewById<Spinner>(R.id.languageSpinner)
+        val languages = arrayOf("한국어", "영어", "일본어", "중국어")
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        languageSpinner.adapter = adapter
+
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setView(dialogView)
+        val alertDialog = alertDialogBuilder.create()
+
+        saveButton.setOnClickListener {
+            val youtubeLink = editTextLink.text.toString()
+            var selectedLanguage = languages[languageSpinner.selectedItemPosition]
+            when(selectedLanguage){
+                "한국어" -> selectedLanguage = "ko-KR"
+                "영어"->selectedLanguage ="en-US"
+                "일본어"->selectedLanguage = "ja-JP"
+                "중국어"->selectedLanguage ="cmn-Hans-CN"
+            }
+            Log.d("링크","$youtubeLink")
+            if (youtubeLink.isNotEmpty()) {
+                val disposable: Disposable = Observable.fromCallable {
+                    sendLinkToServer(youtubeLink, selectedLanguage)
+                }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        alertDialog.dismiss()
+                    }, { error ->
+                        error.printStackTrace()
+                    })
+
+                compositeDisposable.add(disposable)
+            } else {
+                Toast.makeText(this@InputActivity, "유튜브 링크를 입력하세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+        alertDialog.show()
+    }
+    private fun sendLinkToServer(youtubeLink: String, selectedLanguage: String) {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(300, TimeUnit.SECONDS)
+            .readTimeout(300, TimeUnit.SECONDS)
+            .writeTimeout(300, TimeUnit.SECONDS)
+            .build()
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        val requestBody = """
+    {
+        "url": "$youtubeLink",
+        "language": "$selectedLanguage"
+    }
+    """.trimIndent().toRequestBody(jsonMediaType)
+        val request = Request.Builder()
+            .url("https://29e6-220-65-221-55.ngrok-free.app/api/uploadLink")
+            .post(requestBody)
+            .build()
+        try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                val responseBody = response.body?.string()
+                Log.d("서버 응답 데이터", "$responseBody")
+                summary = responseBody
+            } else {
+                Log.d("실패", "진짜울고싶다.")
+            }
+        } catch (e: IOException) {
+            Log.e("네트워크 오류", e.message ?: "Unknown error")
+        }
+
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+    }
+    private fun uploadMediaToServer(fileUri: Uri, type: String, fileName: String) {
         // ProgressBar 표시 시작
         binding.progressBar.visibility = View.VISIBLE
-
         val observable: Observable<Response> = Observable.create(ObservableOnSubscribe<Response> { emitter ->
             val file = File(fileUri.path)
             val fileRequestBody = RequestBody.create("audio/wav".toMediaType(), file) // WAV 파일로 설정
@@ -125,29 +213,27 @@ class InputActivity : AppCompatActivity() {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(type, fileName, fileRequestBody)
                 .build()
-
             val request = Request.Builder()
-                .url("https://2bb0-223-194-133-149.ngrok-free.app")
+                .url("https://29e6-220-65-221-55.ngrok-free.app/api/uploadLink")
                 .post(multipartBody)
                 .build()
-
             val client = OkHttpClient()
             val response = client.newCall(request).execute()
-
             if (!emitter.isDisposed) {
                 emitter.onNext(response)
                 emitter.onComplete()
             }
         })
-
         val disposable = observable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 if (response.isSuccessful) {
                     // 성공 처리
+                    Log.d("성공","")
                 } else {
                     // 실패 처리
+                    Log.d("실패","")
                 }
                 // ProgressBar 숨기기
                 binding.progressBar.visibility = View.GONE
@@ -160,16 +246,6 @@ class InputActivity : AppCompatActivity() {
 
         compositeDisposable.add(disposable)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // 모든 Disposable 제거
-        compositeDisposable.clear()
-    }
-
-
-
-
     //비디오 가저오는 함수
     private fun dispatchTakeVideoIntent() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
@@ -206,14 +282,11 @@ class InputActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             val videoUri: Uri? = data?.data
-
             // videoUri를 사용하여 동영상을 가져옵니다.
-
             videoUri?.let {
                 val retriever = MediaMetadataRetriever()
                 retriever.setDataSource(this, it)

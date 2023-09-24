@@ -14,6 +14,7 @@ class Custom : AppCompatActivity() {
     private val binding by lazy {
         ActivityCustomBinding.inflate(layoutInflater)
     }
+    val summary = intent.getStringExtra("summary")
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -24,7 +25,7 @@ class Custom : AppCompatActivity() {
     fun onResultFromFragment(data: Intent?) {
         setResult(Activity.RESULT_OK, data)
         val contact = data?.getStringExtra("context")
-        Log.d("Custom값은","${contact},")
+        Log.d("Custom값은","${contact},${summary}")
         finish()
     }
 

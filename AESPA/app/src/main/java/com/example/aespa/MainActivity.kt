@@ -39,17 +39,6 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-
-
-
-
-
-
-
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -69,19 +58,12 @@ class MainActivity : AppCompatActivity() {
                     //텍스트 뷰 변환
                     binding.textView2.text = "로그인 인증 성공!!"
                     // 노트 리스트 화면으로 이동
-
                 }
-
                 //로그인 하지 않았을 때
-
                 false -> binding.textView2.text = "로그인 인증 필요"
             }
         }
-
-
-
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -95,4 +77,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+
+
 }
