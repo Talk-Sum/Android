@@ -63,7 +63,7 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
 
 
     inner class ViewHolder4(private val view: View) : RecyclerView.ViewHolder(view) {
-        //세팅v
+        // 세팅 뷰들
         val imgv = view.findViewById<ImageView>(R.id.imageView10)
         val namet = view.findViewById<TextView>(R.id.name)
         val datet = view.findViewById<TextView>(R.id.date)
@@ -94,17 +94,38 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
             popupMenu.show()
         }
 
-
         fun bind(data: saveData) {
             namet.text = "노트 제목 : ${data.name}" // data.name 대신 fileName 사용
             datet.text = "날짜 : ${data.date}"
             user_namet.text = "작성자 : ${data.user_name}"
             previewt.text = "미리 보기 : ${data.content}"
-            setEllipsizeText(previewt,previewt.text.toString(),20 )
+            setEllipsizeText(previewt, previewt.text.toString(), 20)
         }
+
         private fun fetchImageFromGallery(position: Int) {
-            imageSelectedListener.onImageSelected(position)
+            val item = viewModel4.items[position]
+            val context = imgv.context
+
+            val cursor = item.img?.let {
+                context.contentResolver.query(
+                    it, // 이미지의 Uri를 사용합니다.
+                    null,
+                    null,
+                    null,
+                    null
+                )
+            }
+
+            if (cursor != null && cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
+                val imagePath = cursor.getString(columnIndex)
+
+                // imagePath를 사용하여 이미지를 로드하고 ImageView에 설정합니다.
+                // 이후 cursor를 닫아야 합니다.
+                cursor.close()
+            }
         }
+
         init {
             imgv.setOnClickListener {
                 val position = adapterPosition
@@ -115,12 +136,12 @@ class SaveAdapter(private val viewModel4: SaveViewModel,
                 notifyDataSetChanged()
             }
         }
+
         fun setContents(pos: Int) {
             with(viewModel4.items[pos]) {
-                imgv.setImageURI(this.img)
+                fetchImageFromGallery(pos)
             }
         }
-
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder4 {

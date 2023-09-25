@@ -205,7 +205,7 @@ class InputActivity : AppCompatActivity() {
 
                 // 서버 응답을 받은 후에 state 값을 변경
                 runOnUiThread {
-                    binding.textView.text = "$summary"
+                    binding.textView.text = "$youtubeLink"
                     state = true
                 }
             } else {
@@ -220,6 +220,8 @@ class InputActivity : AppCompatActivity() {
         super.onDestroy()
         compositeDisposable.clear()
     }
+
+
     private fun uploadMediaToServer(fileUri: Uri, type: String, fileName: String) {
         // ProgressBar 표시 시작
         binding.progressBar.visibility = View.VISIBLE
@@ -264,41 +266,7 @@ class InputActivity : AppCompatActivity() {
         compositeDisposable.add(disposable)
     }
     //비디오 가저오는 함수
-    private fun dispatchTakeVideoIntent() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
-            != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)) {
-                // Show an explanation to the user *asynchronously*.
-                AlertDialog.Builder(this)
-                    .setTitle("권한 필요")
-                    .setMessage("이 기능을 사용하려면 외부 저장소 접근 권한이 필요합니다.")
-                    .setPositiveButton("확인") { _, _ ->
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_MEDIA_VIDEO), REQUEST_VIDEO_CAPTURE)
-                    }
-                    .setNegativeButton("취소", null)
-                    .create()
-                    .show()
-            } else {
-                // "Never ask again" selected, guide user to settings
-                AlertDialog.Builder(this)
-                    .setTitle("권한 설정")
-                    .setMessage("외부 저장소 접근 권한이 필요합니다. 설정 메뉴로 이동하여 권한을 활성화해주세요.")
-                    .setPositiveButton("설정으로 이동") { _, _ ->
-                        startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
-                    }
-                    .setNegativeButton("취소", null)
-                    .create()
-                    .show()
-            }
-        } else {
-            val takeVideoIntent = Intent(Intent.ACTION_GET_CONTENT)
-            takeVideoIntent.type = "video/*"
-            if (takeVideoIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE)
-            }
-        }
-    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
