@@ -192,7 +192,7 @@ class InputActivity : AppCompatActivity() {
     }
     """.trimIndent().toRequestBody(jsonMediaType)
         val request = Request.Builder()
-            .url("https://781a-58-225-51-205.ngrok-free.app/api/uploadLink")
+            .url("https://a98ab72c0f8b.ngrok.app/api/uploadLink")
             .post(requestBody)
             .build()
         try {
@@ -231,7 +231,7 @@ class InputActivity : AppCompatActivity() {
                 .addFormDataPart(type, fileName, fileRequestBody)
                 .build()
             val request = Request.Builder()
-                .url("https://781a-58-225-51-205.ngrok-free.app/api/uploadLink")
+                .url("https://a98ab72c0f8b.ngrok.app/api/uploadLink")
                 .post(multipartBody)
                 .build()
             val client = OkHttpClient()
