@@ -19,16 +19,26 @@ class BlankFragment3 : Fragment(R.layout.fragment_blank3) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentBlank3Binding.inflate(inflater, container, false) // 뷰 바인딩 초기화
 
+
         binding.button2.setOnClickListener{
+
             val intent = Intent(requireContext(),Custom2::class.java)
             viewModel.selectedImage.observe(viewLifecycleOwner) { imageResId ->
                 intent.putExtra("imgId",imageResId)
                 intent.putExtra("itemId",viewModel.itemId)
+                val receivedBundle = arguments
+                Log.d("ㅇ서머리", "$receivedBundle")
+                if (receivedBundle != null) {
+                    val receivedValue = receivedBundle.getString("summary")
+                    intent.putExtra("summary", receivedValue)
+                    Log.d("서머리", "$receivedValue")
+                }
+
             }
             startActivityForResult(intent,REQUEST_INTENT_CODE)
         }
 
-        
+
         return binding.root // 뷰 계층 구조 반환
         
     }

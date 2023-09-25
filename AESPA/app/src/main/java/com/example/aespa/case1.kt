@@ -24,9 +24,10 @@ class case1 : Fragment() , ImageSelectedListener{
         recyclerView.adapter = CustomAdapter(viewModel,this)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
+        val sum = arguments?.getString("sum")
+        viewModel.cot = sum!!
 
-
-
+        binding.editTextText3.setText(sum)
 
 
         return binding.root // 뷰 계층 구조 반환

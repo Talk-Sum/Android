@@ -15,7 +15,6 @@
         android:ems="10"
         android:inputType="text|textMultiLine"
         android:padding="30dp"
-        android:text="내용"
         android:textAlignment="center"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"

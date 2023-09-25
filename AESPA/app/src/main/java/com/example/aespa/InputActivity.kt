@@ -75,6 +75,7 @@ class InputActivity : AppCompatActivity() {
         }
         //다음 버튼 클릭 리스너
         binding.nextbtn.setOnClickListener {
+            Log.d("서버ㄴ","$state")
             if(state) {
                 val intent = Intent(this, Custom::class.java)
                 intent.putExtra("summary","$summary")
@@ -142,23 +143,31 @@ class InputActivity : AppCompatActivity() {
         saveButton.setOnClickListener {
             val youtubeLink = editTextLink.text.toString()
             var selectedLanguage = languages[languageSpinner.selectedItemPosition]
-            when(selectedLanguage){
+            when (selectedLanguage) {
                 "한국어" -> selectedLanguage = "ko-KR"
-                "영어"->selectedLanguage ="en-US"
-                "일본어"->selectedLanguage = "ja-JP"
-                "중국어"->selectedLanguage ="cmn-Hans-CN"
+                "영어" -> selectedLanguage = "en-US"
+                "일본어" -> selectedLanguage = "ja-JP"
+                "중국어" -> selectedLanguage = "cmn-Hans-CN"
             }
-            Log.d("링크","$youtubeLink")
+            Log.d("링크", "$youtubeLink")
             if (youtubeLink.isNotEmpty()) {
+                // 다이얼로그를 숨김
+                alertDialog.dismiss()
+                // 프로그레스 바를 표시
+                binding.progressBar.visibility = View.VISIBLE
+
                 val disposable: Disposable = Observable.fromCallable {
                     sendLinkToServer(youtubeLink, selectedLanguage)
                 }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        alertDialog.dismiss()
+                        // 서버 요청이 완료되면 프로그레스 바를 숨김
+                        binding.progressBar.visibility = View.GONE
                     }, { error ->
                         error.printStackTrace()
+                        // 요청 실패 시 프로그레스 바를 숨김
+                        binding.progressBar.visibility = View.GONE
                     })
 
                 compositeDisposable.add(disposable)
@@ -168,6 +177,7 @@ class InputActivity : AppCompatActivity() {
         }
         alertDialog.show()
     }
+
     private fun sendLinkToServer(youtubeLink: String, selectedLanguage: String) {
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS)
@@ -182,7 +192,7 @@ class InputActivity : AppCompatActivity() {
     }
     """.trimIndent().toRequestBody(jsonMediaType)
         val request = Request.Builder()
-            .url("https://29e6-220-65-221-55.ngrok-free.app/api/uploadLink")
+            .url("https://781a-58-225-51-205.ngrok-free.app/api/uploadLink")
             .post(requestBody)
             .build()
         try {
@@ -191,14 +201,21 @@ class InputActivity : AppCompatActivity() {
                 val responseBody = response.body?.string()
                 Log.d("서버 응답 데이터", "$responseBody")
                 summary = responseBody
+                Log.d("서버 응답 데이터", "$summary")
+
+                // 서버 응답을 받은 후에 state 값을 변경
+                runOnUiThread {
+                    binding.textView.text = "$summary"
+                    state = true
+                }
             } else {
                 Log.d("실패", "진짜울고싶다.")
             }
         } catch (e: IOException) {
             Log.e("네트워크 오류", e.message ?: "Unknown error")
         }
-
     }
+
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
@@ -214,7 +231,7 @@ class InputActivity : AppCompatActivity() {
                 .addFormDataPart(type, fileName, fileRequestBody)
                 .build()
             val request = Request.Builder()
-                .url("https://29e6-220-65-221-55.ngrok-free.app/api/uploadLink")
+                .url("https://781a-58-225-51-205.ngrok-free.app/api/uploadLink")
                 .post(multipartBody)
                 .build()
             val client = OkHttpClient()

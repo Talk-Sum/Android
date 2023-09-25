@@ -13,6 +13,7 @@ data class ImgItem2(
 )
 enum class ItemEvent2 { ADD, UPDATE, DELETE }
 class ButtonViewModel2 : ViewModel() {
+    var cot: String? = null // 이미 선언되어 있으므로 이 줄은 건너뛸 수 있습니다.
     val itemsListData = MutableLiveData<ArrayList<ImgItem2>>()
     val items = ArrayList<ImgItem2>()
     val itemClickEvent = MutableLiveData<Int>()

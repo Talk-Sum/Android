@@ -7,7 +7,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
 class CustomAdapter2(  private val viewModel: ButtonViewModel2,
-                       private val imageSelectedListener: ImageSelectedListener) : RecyclerView.Adapter<CustomAdapter2.ViewHolder2>() {
+                       private val imageSelectedListener: ImageSelectedListener,
+                       private val sum: String?
+                       ) : RecyclerView.Adapter<CustomAdapter2.ViewHolder2>() {
     companion object {
         var lastSelectedPosition = -1
     }
@@ -15,6 +17,10 @@ class CustomAdapter2(  private val viewModel: ButtonViewModel2,
         val imageView = view.findViewById<ImageView>(R.id.imageView4)
         val editText = view.findViewById<EditText>(R.id.editTextText2)
         private val REQUEST_IMAGE_PICK = 1
+        fun bind(sum: String?) {
+            editText.setText(sum)
+        }
+
         private fun fetchImageFromGallery(position: Int) {
             imageSelectedListener.onImageSelected(position)
         }
@@ -69,6 +75,7 @@ class CustomAdapter2(  private val viewModel: ButtonViewModel2,
     // ViewHolder 에 데이터 연결
     override fun onBindViewHolder(viewHolder: ViewHolder2, position: Int) {
         viewHolder.setContents(position)
+        viewHolder.bind(sum)
     }
     override fun getItemCount() = viewModel.items.size
 }

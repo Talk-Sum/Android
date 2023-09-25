@@ -23,11 +23,12 @@ class case2 : Fragment(), ImageSelectedListener{
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = Item2Binding.inflate(inflater, container, false) // 뷰 바인딩 초기화
         val recyclerView = binding.todoList2
-        val adapter = CustomAdapter2(viewModel,this)
-        recyclerView.adapter = CustomAdapter2(viewModel,this)
+        val sum = arguments?.getString("sum")
+        val adapter = CustomAdapter2(viewModel,this,sum)
+        recyclerView.adapter = CustomAdapter2(viewModel,this,sum)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
-
+        viewModel.cot = sum!!
 
         return binding.root // 뷰 계층 구조 반환
     }

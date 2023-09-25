@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,16 +21,21 @@ class case3 : Fragment(), ImageSelectedListener {
     private lateinit var binding:Item3Binding// 바인딩 객체 선언
     private val REQUEST_IMAGE_PICK =1
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = Item3Binding.inflate(inflater, container, false) // 뷰 바인딩 초기화
         val recyclerView = binding.todoList3
-        val adapter = CustomAdapter3(viewModel,this)
-        recyclerView.adapter = CustomAdapter3(viewModel,this)
+        val sum = arguments?.getString("sum")
+        val adapter = CustomAdapter3(viewModel,this,sum)
+        recyclerView.adapter = CustomAdapter3(viewModel,this,sum)
+        Log.d("섬","$sum")
+        viewModel.cot = sum!!
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         viewModel.itemClickEvent.observe(requireActivity()) { // 항목(뷰)을 클릭했을 때 변경되는 데이터 옵저버
             //갤러리이동
         }
+
         return binding.root // 뷰 계층 구조 반환
     }
 

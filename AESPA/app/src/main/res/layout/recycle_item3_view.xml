@@ -17,7 +17,6 @@
         android:ems="10"
         android:inputType="text|textMultiLine"
         android:padding="30dp"
-        android:text="내용"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/imageView5"
         app:layout_constraintEnd_toEndOf="parent"

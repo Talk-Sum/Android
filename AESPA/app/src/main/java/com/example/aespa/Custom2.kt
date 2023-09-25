@@ -47,13 +47,14 @@ class Custom2 : AppCompatActivity() {
     private fun setupViews() {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = LocalDateTime.now().format(dateTimeFormatter)
-        val content = "helloooooooooooooooooooooooooo"
+        val content = intent.getStringExtra("summary")
 
         binding.savabtn.setOnClickListener {
             val resultIntent = Intent().apply {
                 putExtra("use", true)
                 putExtra("context", content)
                 putExtra("time", formattedDateTime)
+                Log.d("콘","$content")
             }
             setResult(RESULT_OK, resultIntent)
             finish()
@@ -63,11 +64,31 @@ class Custom2 : AppCompatActivity() {
     private fun handleIntentExtras() {
         val imgId = intent.getIntExtra("imgId", 0)
         val itemId = intent.getIntExtra("itemId", 0)
-
+        val sum = intent.getStringExtra("summary")
         val fragment = when (itemId) {
-            3 -> case3()
-            2 -> case1()
-            1 -> case2()
+            3 -> {
+                val bundle = Bundle()
+                bundle.putString("sum","$sum") // 전달할 값 설정
+                val fragment = case3() // YourFragment는 프래그먼트 클래스명으로 변경해야 합니다.
+                fragment.arguments = bundle
+                fragment // 이 부분을 수정했습니다.
+            }
+            2 -> {
+                val bundle = Bundle()
+                bundle.putString("sum","$sum") // 전달할 값 설정
+                Log.d("전달","$sum")
+                val fragment = case1() // YourFragment는 프래그먼트 클래스명으로 변경해야 합니다.
+                fragment.arguments = bundle
+                fragment // 이 부분을 수정했습니다.
+            }
+            1 -> {
+                val bundle = Bundle()
+                bundle.putString("sum","$sum") // 전달할 값 설정
+                Log.d("전달","$sum")
+                val fragment = case2() // YourFragment는 프래그먼트 클래스명으로 변경해야 합니다.
+                fragment.arguments = bundle
+                fragment // 이 부분을 수정했습니다.
+            }
             else -> {
                 Log.e("에러", "에러")
                 return

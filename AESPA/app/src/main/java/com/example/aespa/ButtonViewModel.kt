@@ -14,6 +14,7 @@ data class ImgItem (
 enum class ItemEvent { ADD, UPDATE, DELETE }
 class ButtonViewModel : ViewModel(){
      private val _selectedImage = MutableLiveData<Int>()
+     var cot : String? = null
      val selectedImage: LiveData<Int> get() = _selectedImage
      var itemId = 0
      val loginable: MutableLiveData<Boolean> = MutableLiveData()
